@@ -1,4 +1,5 @@
 
+
 window.REVIEW_DATA = [
   {
     id: 1,
@@ -61,7 +62,8 @@ window.TOOLS_DATA = [
     bestFor: 'Social Media, Ideação Rápida.',
     bgColor: 'bg-[#FDE047]', // Yellow 300/400 equivalent
     logoColor: 'text-black',
-    logoId: 'banana'
+    logoId: 'banana',
+    url: 'https://fal.ai' // Placeholder for fast image gen
   },
   {
     id: 'chatgpt',
@@ -71,7 +73,8 @@ window.TOOLS_DATA = [
     bestFor: 'Raciocínio, Escrita, Coding.',
     bgColor: 'bg-[#10A37F]', // OpenAI Green
     logoColor: 'text-white',
-    logoId: 'openai'
+    logoId: 'openai',
+    url: 'https://chat.openai.com'
   },
   {
     id: 'notebooklm',
@@ -81,7 +84,8 @@ window.TOOLS_DATA = [
     bestFor: 'Estudantes, Investigação, RAG Pessoal.',
     bgColor: 'bg-white border-b-4 border-blue-500',
     logoColor: 'text-blue-500',
-    logoId: 'notebook'
+    logoId: 'notebook',
+    url: 'https://notebooklm.google.com'
   },
   {
     id: 'suno',
@@ -91,7 +95,8 @@ window.TOOLS_DATA = [
     bestFor: 'Música, Jingles, Criatividade Áudio.',
     bgColor: 'bg-black',
     logoColor: 'text-white',
-    logoId: 'suno'
+    logoId: 'suno',
+    url: 'https://suno.com'
   },
   {
     id: 'ai-studio',
@@ -101,7 +106,8 @@ window.TOOLS_DATA = [
     bestFor: 'Developers, Análise de Vídeo Longo.',
     bgColor: 'bg-[#1E40AF]', // Deep Blue
     logoColor: 'text-white',
-    logoId: 'gemini'
+    logoId: 'gemini',
+    url: 'https://aistudio.google.com'
   },
   {
     id: 'gamma',
@@ -111,7 +117,8 @@ window.TOOLS_DATA = [
     bestFor: 'PowerPoints Rápidos, Pitch Decks.',
     bgColor: 'bg-[#F4F2EB]', // Creamy/Paste
     logoColor: 'text-[#6D28D9]', // Purple
-    logoId: 'gamma'
+    logoId: 'gamma',
+    url: 'https://gamma.app'
   },
   {
     id: 'claude',
@@ -121,7 +128,8 @@ window.TOOLS_DATA = [
     bestFor: 'Resumos Grandes, Escrita de Nuance.',
     bgColor: 'bg-[#D97757]', // Anthropic Orange
     logoColor: 'text-white',
-    logoId: 'claude'
+    logoId: 'claude',
+    url: 'https://claude.ai'
   },
   {
     id: 'midjourney',
@@ -131,7 +139,8 @@ window.TOOLS_DATA = [
     bestFor: 'Fotografia, Arte Conceptual.',
     bgColor: 'bg-white',
     logoColor: 'text-black',
-    logoId: 'midjourney'
+    logoId: 'midjourney',
+    url: 'https://www.midjourney.com'
   },
   {
     id: 'perplexity',
@@ -141,7 +150,8 @@ window.TOOLS_DATA = [
     bestFor: 'Fact-Checking, Notícias.',
     bgColor: 'bg-[#14B8A6]', // Teal
     logoColor: 'text-white',
-    logoId: 'perplexity'
+    logoId: 'perplexity',
+    url: 'https://www.perplexity.ai'
   },
   {
     id: 'lovable',
@@ -151,7 +161,8 @@ window.TOOLS_DATA = [
     bestFor: 'Prototipagem Rápida, Web Apps.',
     bgColor: 'bg-black',
     logoColor: 'text-pink-500',
-    logoId: 'lovable'
+    logoId: 'lovable',
+    url: 'https://lovable.dev'
   },
   {
     id: 'deepseek',
@@ -161,7 +172,8 @@ window.TOOLS_DATA = [
     bestFor: 'Developers, Uso Local, Raciocínio.',
     bgColor: 'bg-[#4B5563]', // Slate grey
     logoColor: 'text-blue-300',
-    logoId: 'deepseek'
+    logoId: 'deepseek',
+    url: 'https://chat.deepseek.com'
   },
   {
     id: 'manus',
@@ -171,6 +183,7 @@ window.TOOLS_DATA = [
     bestFor: 'Produtividade, Workflows Complexos.',
     bgColor: 'bg-[#F97316]', // Orange
     logoColor: 'text-white',
-    logoId: 'manus'
+    logoId: 'manus',
+    url: 'https://manus.ai'
   }
 ];

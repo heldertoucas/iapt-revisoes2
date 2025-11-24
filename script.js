@@ -1,3 +1,4 @@
+
 // URL Helper Functions
 function getUrlParams() {
     const params = new URLSearchParams(window.location.search);
@@ -451,8 +452,13 @@ function renderTools() {
         if (tool.logoId === 'midjourney') iconName = 'palette';
         
         return `
-        <div class="group relative flex flex-col min-h-[500px] h-auto rounded-3xl overflow-hidden bg-white shadow-2xl transition-all duration-500 hover:scale-[1.02] animate-slide-up opacity-0" style="animation-delay: ${index * 0.05}s">
+        <a href="${tool.url}" target="_blank" rel="noopener noreferrer" class="group relative flex flex-col min-h-[500px] h-auto rounded-3xl overflow-hidden bg-white shadow-2xl transition-all duration-500 hover:scale-[1.02] animate-slide-up opacity-0 cursor-pointer" style="animation-delay: ${index * 0.05}s">
             
+            <!-- Hover External Link Indicator -->
+            <div class="absolute top-4 right-4 z-20 opacity-0 group-hover:opacity-100 transition-opacity duration-300 bg-white/20 backdrop-blur-md p-2 rounded-full shadow-lg">
+                <i data-lucide="external-link" class="w-5 h-5 text-white drop-shadow-md"></i>
+            </div>
+
             <!-- Top: Brand Color -->
             <div class="h-60 w-full shrink-0 ${tool.bgColor} flex items-center justify-center p-8 relative overflow-hidden">
                  <div class="absolute inset-0 opacity-20 bg-[radial-gradient(circle_at_center,white,transparent)]"></div>
@@ -485,7 +491,7 @@ function renderTools() {
                     </div>
                 </div>
             </div>
-        </div>`;
+        </a>`;
     }).join('');
 
     dom.mainContainer.innerHTML = `
