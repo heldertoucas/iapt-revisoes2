@@ -1,5 +1,7 @@
 
-// URL Helper Functions
+
+// --- HELPER FUNCTIONS (Hoisted) ---
+
 function getUrlParams() {
     const params = new URLSearchParams(window.location.search);
     const modeParam = params.get('mode');
@@ -33,22 +35,16 @@ function updateUrl() {
     window.history.pushState({ path: newUrl }, '', newUrl);
 }
 
-// State Initialization
-const initialParams = getUrlParams();
+function getCurrentData() {
+    // Ensure data exists before returning
+    if (window.state.mode === 'review') return window.REVIEW_DATA || [];
+    return window.state.tipsData || [];
+}
 
-window.state = {
-    mode: initialParams.mode,
-    tipsData: [],
-    currentId: initialParams.currentId,
-    showDetails: false,
-    isGridOpen: false
-};
+// --- CORE ACTIONS (Exposed Globally) ---
 
-// Global DOM Cache
-let dom = {};
-
-// Global Actions
-window.setMode = function(newMode) {
+function setMode(newMode) {
+    if (!window.state) return; // Safety check
     if (window.state.mode === newMode) return;
     window.state.mode = newMode;
     window.state.currentId = 1;
@@ -58,7 +54,8 @@ window.setMode = function(newMode) {
     render();
 }
 
-window.nextSlide = function() {
+function nextSlide() {
+    if (!window.state) return;
     const data = getCurrentData();
     if (window.state.currentId < data.length) {
         window.state.currentId++;
@@ -71,7 +68,8 @@ window.nextSlide = function() {
     }
 }
 
-window.prevSlide = function() {
+function prevSlide() {
+    if (!window.state) return;
     if (window.state.currentId > 1) {
         window.state.currentId--;
         window.state.showDetails = false;
@@ -83,13 +81,15 @@ window.prevSlide = function() {
     }
 }
 
-window.toggleDetails = function() {
+function toggleDetails() {
+    if (!window.state) return;
     window.state.showDetails = !window.state.showDetails;
     renderSlide();
     if (typeof lucide !== 'undefined') lucide.createIcons();
 }
 
-window.toggleGrid = function() {
+function toggleGrid() {
+    if (!window.state) return;
     window.state.isGridOpen = !window.state.isGridOpen;
     const grid = document.getElementById('grid-overlay');
     if (!grid) return;
@@ -105,20 +105,85 @@ window.toggleGrid = function() {
     }
 }
 
-window.goToSlide = function(id) {
+function goToSlide(id) {
+    if (!window.state) return;
     window.state.currentId = id;
-    if(window.state.isGridOpen) window.toggleGrid();
+    if(window.state.isGridOpen) toggleGrid();
     updateUrl();
     render();
 }
 
-function getCurrentData() {
-    // Ensure data exists before returning
-    if (window.state.mode === 'review') return window.REVIEW_DATA || [];
-    return window.state.tipsData || [];
+// Explicitly attach to window to ensure global availability
+window.setMode = setMode;
+window.nextSlide = nextSlide;
+window.prevSlide = prevSlide;
+window.toggleDetails = toggleDetails;
+window.toggleGrid = toggleGrid;
+window.goToSlide = goToSlide;
+
+
+// --- INITIALIZATION ---
+
+// State Object
+const initialParams = getUrlParams();
+window.state = {
+    mode: initialParams.mode,
+    tipsData: [], // Will be loaded
+    currentId: initialParams.currentId,
+    showDetails: false,
+    isGridOpen: false
+};
+
+// Global DOM Cache
+let dom = {};
+
+// Parse Markdown Logic
+function parseMarkdown(markdown) {
+    const lines = markdown.split('\n');
+    const tips = [];
+    let currentTip = null;
+    let currentDetails = [];
+
+    lines.forEach(line => {
+        const headerMatch = line.match(/^##\s+(\d+)\.\s+(.+)/);
+        if (headerMatch) {
+            if (currentTip) {
+                currentTip.details = currentDetails.join('\n').trim();
+                tips.push(currentTip);
+            }
+            currentTip = { id: parseInt(headerMatch[1]), content: headerMatch[2].trim() };
+            currentDetails = [];
+        } else if (currentTip) {
+            if (line.trim() !== '' || (currentDetails.length > 0 && currentDetails[currentDetails.length-1] !== '')) {
+                currentDetails.push(line);
+            }
+        }
+    });
+    if (currentTip) {
+        currentTip.details = currentDetails.join('\n').trim();
+        tips.push(currentTip);
+    }
+    return tips;
 }
 
-// Initialization
+async function loadTips() {
+    try {
+        const response = await fetch('tips.md');
+        if (!response.ok) throw new Error("Status " + response.status);
+        const text = await response.text();
+        window.state.tipsData = parseMarkdown(text);
+        
+        // Validation: If ID is too high, reset
+        if (window.state.mode === 'tips' && window.state.currentId > window.state.tipsData.length) {
+            window.state.currentId = 1;
+        }
+    } catch (e) {
+        console.warn("Failed to load tips.md, using fallback.", e);
+        window.state.tipsData = [{id: 1, content: "Bem-vindo à Masterclass", details: "**Dica:** Certifique-se que o ficheiro tips.md está na pasta raiz."}];
+    }
+}
+
+// Main Entry Point
 document.addEventListener('DOMContentLoaded', async () => {
     // Cache Elements
     dom = {
@@ -148,10 +213,10 @@ document.addEventListener('DOMContentLoaded', async () => {
     // Event Listeners
     document.addEventListener('keydown', (e) => {
         if (window.state.isGridOpen || window.state.mode === 'tools') return;
-        if (e.key === 'ArrowRight' || e.key === 'ArrowDown' || e.key === ' ') window.nextSlide();
-        if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') window.prevSlide();
-        if (e.key === 'Enter') window.toggleDetails();
-        if (e.key === 'Escape' && window.state.showDetails) window.toggleDetails();
+        if (e.key === 'ArrowRight' || e.key === 'ArrowDown' || e.key === ' ') nextSlide();
+        if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') prevSlide();
+        if (e.key === 'Enter') toggleDetails();
+        if (e.key === 'Escape' && window.state.showDetails) toggleDetails();
     });
 
     window.addEventListener('popstate', () => {
@@ -164,50 +229,6 @@ document.addEventListener('DOMContentLoaded', async () => {
     });
 });
 
-async function loadTips() {
-    try {
-        const response = await fetch('tips.md');
-        if (!response.ok) throw new Error("Status " + response.status);
-        const text = await response.text();
-        window.state.tipsData = parseMarkdown(text);
-        
-        // Validation: If ID is too high, reset
-        if (window.state.mode === 'tips' && window.state.currentId > window.state.tipsData.length) {
-            window.state.currentId = 1;
-        }
-    } catch (e) {
-        console.warn("Failed to load tips.md, using fallback.", e);
-        window.state.tipsData = [{id: 1, content: "Bem-vindo à Masterclass", details: "**Dica:** Certifique-se que o ficheiro tips.md está na pasta raiz."}];
-    }
-}
-
-function parseMarkdown(markdown) {
-    const lines = markdown.split('\n');
-    const tips = [];
-    let currentTip = null;
-    let currentDetails = [];
-
-    lines.forEach(line => {
-        const headerMatch = line.match(/^##\s+(\d+)\.\s+(.+)/);
-        if (headerMatch) {
-            if (currentTip) {
-                currentTip.details = currentDetails.join('\n').trim();
-                tips.push(currentTip);
-            }
-            currentTip = { id: parseInt(headerMatch[1]), content: headerMatch[2].trim() };
-            currentDetails = [];
-        } else if (currentTip) {
-            if (line.trim() !== '' || (currentDetails.length > 0 && currentDetails[currentDetails.length-1] !== '')) {
-                currentDetails.push(line);
-            }
-        }
-    });
-    if (currentTip) {
-        currentTip.details = currentDetails.join('\n').trim();
-        tips.push(currentTip);
-    }
-    return tips;
-}
 
 // --- RENDER LOGIC ---
 
@@ -256,6 +277,7 @@ function updateThemeVisuals() {
         circleColor = "border-blue-500/20";
     }
     
+    // Safety check in case DOM isn't ready
     if (dom.bgGradient) dom.bgGradient.className = bgClass;
     if (dom.decoCircle1) dom.decoCircle1.className = `absolute -top-40 -left-40 w-[500px] h-[500px] rounded-full border-[60px] blur-3xl opacity-30 animate-pulse-slow pointer-events-none transition-colors duration-1000 ${circleColor}`;
     if (dom.decoCircle2) dom.decoCircle2.className = `absolute -bottom-20 -right-20 w-[400px] h-[400px] rounded-full border-[40px] blur-2xl opacity-30 pointer-events-none transition-colors duration-1000 ${circleColor}`;
@@ -330,7 +352,7 @@ function renderSlide() {
     
     // Safety check
     if (data.length === 0) {
-        dom.mainContainer.innerHTML = '<div class="flex items-center justify-center h-full text-white/50">Carregando dados...</div>';
+        dom.mainContainer.innerHTML = '<div class="flex items-center justify-center h-full text-white/50 animate-pulse">A carregar...</div>';
         return;
     }
 
@@ -371,7 +393,7 @@ function renderSlide() {
     const detailsContent = (item.details || '').split('\n').map(line => {
         if (!line.trim()) return '';
         // Check headers
-        const isHeader = line.startsWith('**') || line.includes('Prompt:') || line.includes('Exemplo:') || line.includes('Ação:');
+        const isHeader = line.startsWith('**') || line.includes('Prompt:') || line.includes('Exemplo:') || line.includes('Ação:') || line.includes('Regra:') || line.includes('Estratégia:');
         const cleanLine = line.replace(/\*\*/g, '');
         
         return `<p class="${isHeader ? `font-bold text-lg mt-6 mb-2 ${accentColor}` : 'text-gray-300 mb-3'}">${cleanLine}</p>`;
@@ -440,7 +462,7 @@ function renderTools() {
     }
 
     let cardsHTML = tools.map((tool, index) => {
-        // Icon Logic (simplified)
+        // Icon Logic
         let iconName = 'zap';
         if (tool.logoId === 'openai') iconName = 'message-square';
         if (tool.logoId === 'banana') iconName = 'moon';
@@ -450,21 +472,27 @@ function renderTools() {
         if (tool.logoId === 'claude') iconName = 'feather';
         if (tool.logoId === 'perplexity') iconName = 'search';
         if (tool.logoId === 'midjourney') iconName = 'palette';
+        if (tool.logoId === 'gamma') iconName = 'presentation';
+        if (tool.logoId === 'lovable') iconName = 'code-2';
+        if (tool.logoId === 'deepseek') iconName = 'brain-circuit';
+        if (tool.logoId === 'manus') iconName = 'bot';
         
         return `
-        <a href="${tool.url}" target="_blank" rel="noopener noreferrer" class="group relative flex flex-col min-h-[500px] h-auto rounded-3xl overflow-hidden bg-white shadow-2xl transition-all duration-500 hover:scale-[1.02] animate-slide-up opacity-0 cursor-pointer" style="animation-delay: ${index * 0.05}s">
+        <a href="${tool.url}" target="_blank" rel="noopener noreferrer" 
+           class="group relative flex flex-col min-h-[550px] h-auto rounded-3xl overflow-hidden bg-white shadow-2xl transition-all duration-500 hover:scale-[1.02] animate-slide-up opacity-0 cursor-pointer block z-20 pointer-events-auto" 
+           style="animation-delay: ${index * 0.05}s">
             
             <!-- Hover External Link Indicator -->
-            <div class="absolute top-4 right-4 z-20 opacity-0 group-hover:opacity-100 transition-opacity duration-300 bg-white/20 backdrop-blur-md p-2 rounded-full shadow-lg">
+            <div class="absolute top-4 right-4 z-30 opacity-0 group-hover:opacity-100 transition-opacity duration-300 bg-white/20 backdrop-blur-md p-2 rounded-full shadow-lg">
                 <i data-lucide="external-link" class="w-5 h-5 text-white drop-shadow-md"></i>
             </div>
 
             <!-- Top: Brand Color -->
-            <div class="h-60 w-full shrink-0 ${tool.bgColor} flex items-center justify-center p-8 relative overflow-hidden">
+            <div class="h-64 w-full shrink-0 ${tool.bgColor} flex items-center justify-center p-8 relative overflow-hidden">
                  <div class="absolute inset-0 opacity-20 bg-[radial-gradient(circle_at_center,white,transparent)]"></div>
                  <div class="relative z-10 flex flex-col items-center transform transition-transform group-hover:scale-110 duration-500">
                     <i data-lucide="${iconName}" class="w-20 h-20 ${tool.logoColor} mb-4" stroke-width="1.5"></i>
-                    <h3 class="text-2xl font-black uppercase tracking-tight ${tool.logoColor} text-center leading-none">
+                    <h3 class="text-2xl font-black uppercase tracking-tight ${tool.logoColor} text-center leading-none drop-shadow-sm">
                         ${tool.name}
                     </h3>
                  </div>
