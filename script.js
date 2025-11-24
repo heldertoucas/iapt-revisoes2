@@ -41,6 +41,33 @@ function getCurrentData() {
     return window.state.tipsData || [];
 }
 
+const TIP_ICONS = {
+    1: 'brain-circuit',         // Logic/Thinking
+    2: 'terminal',              // Prompting
+    3: 'users',                 // Audience
+    4: 'map',                   // Planning
+    5: 'target',                // Goal/Example
+    6: 'shield-alert',          // Privacy
+    7: 'file-search',           // Sources/Fact check
+    8: 'user-check',            // Responsibility
+    9: 'library',               // RAG/Files
+    10: 'list-todo',            // Tasks
+    11: 'git-merge',            // Chain of Thought
+    12: 'wrench',               // Tools
+    13: 'message-circle-warning', // Critique
+    14: 'globe',                // Web Search
+    15: 'layout-template',      // Canvas
+    16: 'help-circle',          // Missing Info
+    17: 'settings-2',           // Custom Instructions
+    18: 'save',                 // Reusable/Save
+    19: 'sliders-horizontal',   // Refine
+    20: 'rocket'                // Mindset/Improvement
+};
+
+function getTipIcon(id) {
+    return TIP_ICONS[id] || 'lightbulb';
+}
+
 // --- CORE ACTIONS (Exposed Globally) ---
 
 function setMode(newMode) {
@@ -380,6 +407,19 @@ function renderSlide() {
         btnClass = "bg-gradient-to-r from-amber-400 to-amber-600 text-white shadow-amber-500/25";
     }
 
+    // Get Main Icon for Tips
+    let mainIconHTML = '';
+    if (!isReview && !isGoldenRule) {
+        const iconName = getTipIcon(item.id);
+        mainIconHTML = `
+            <div class="mb-6 flex justify-center animate-slide-up">
+                <div class="p-4 rounded-full bg-white/5 backdrop-blur border border-white/10 shadow-2xl">
+                    <i data-lucide="${iconName}" class="w-12 h-12 text-brand-teal drop-shadow-[0_0_15px_rgba(45,212,191,0.5)]"></i>
+                </div>
+            </div>
+        `;
+    }
+
     // Generate Badge HTML
     const badgeHTML = `
         <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border backdrop-blur-sm ${badgeBg} animate-fade-in">
@@ -410,6 +450,8 @@ function renderSlide() {
                 <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 -z-10 select-none pointer-events-none">
                     <span class="text-[15rem] md:text-[35rem] font-black leading-none tracking-tighter text-white/[0.03] font-sans">${item.id}</span>
                 </div>
+                
+                ${mainIconHTML}
 
                 <div class="mb-8">${badgeHTML}</div>
                 
