@@ -42,31 +42,33 @@ function getCurrentData() {
     return window.state.tipsData || [];
 }
 
-const TIP_ICONS = {
-    1: 'brain-circuit',         // Logic/Thinking
-    2: 'terminal',              // Prompting
-    3: 'users',                 // Audience
-    4: 'map',                   // Planning
-    5: 'target',                // Goal/Example
-    6: 'shield-alert',          // Privacy
-    7: 'file-search',           // Sources/Fact check
-    8: 'user-check',            // Responsibility
-    9: 'library',               // RAG/Files
-    10: 'list-todo',            // Tasks
-    11: 'git-merge',            // Chain of Thought
-    12: 'wrench',               // Tools
-    13: 'message-circle-warning', // Critique
-    14: 'globe',                // Web Search
-    15: 'layout-template',      // Canvas
-    16: 'help-circle',          // Missing Info
-    17: 'settings-2',           // Custom Instructions
-    18: 'save',                 // Reusable/Save
-    19: 'sliders-horizontal',   // Refine
-    20: 'rocket'                // Mindset/Improvement
-};
-
 function getTipIcon(id) {
-    return TIP_ICONS[id] || 'lightbulb';
+    // For markdown loaded tips, we fallback to an ID map if icon property doesn't exist,
+    // or just a default. Since markdown parsing is simple, we'll use a map here for 'tips' mode specifically
+    // or rely on a default.
+    const TIPS_ICONS_MAP = {
+        1: 'brain-circuit',
+        2: 'terminal',
+        3: 'users',
+        4: 'map',
+        5: 'target',
+        6: 'shield-alert',
+        7: 'file-search',
+        8: 'user-check',
+        9: 'library',
+        10: 'list-todo',
+        11: 'git-merge',
+        12: 'wrench',
+        13: 'message-circle-warning',
+        14: 'globe',
+        15: 'layout-template',
+        16: 'help-circle',
+        17: 'settings-2',
+        18: 'save',
+        19: 'sliders-horizontal',
+        20: 'rocket'
+    };
+    return TIPS_ICONS_MAP[id] || 'lightbulb';
 }
 
 // --- CORE ACTIONS (Exposed Globally) ---
@@ -438,16 +440,17 @@ function renderSlide() {
 
     // Get Main Icon for Tips
     let mainIconHTML = '';
-    if (!isReview && !isGoldenRule && !isCopilot) {
-        const iconName = getTipIcon(item.id);
-        mainIconHTML = `
-            <div class="mb-6 flex justify-center animate-slide-up">
-                <div class="p-4 rounded-full bg-white/5 backdrop-blur border border-white/10 shadow-2xl">
-                    <i data-lucide="${iconName}" class="w-12 h-12 text-brand-teal drop-shadow-[0_0_15px_rgba(45,212,191,0.5)]"></i>
-                </div>
+    // Use the icon from the item data if available, otherwise use helper for "tips" mode
+    const iconName = item.icon || getTipIcon(item.id);
+    
+    // We show the large icon for all modes now to utilize the new data icons
+    mainIconHTML = `
+        <div class="mb-6 flex justify-center animate-slide-up">
+            <div class="p-4 rounded-full bg-white/5 backdrop-blur border border-white/10 shadow-2xl">
+                <i data-lucide="${iconName}" class="w-12 h-12 ${accentColor} drop-shadow-[0_0_15px_rgba(255,255,255,0.1)]"></i>
             </div>
-        `;
-    }
+        </div>
+    `;
 
     // Generate Badge HTML
     const badgeHTML = `
@@ -462,7 +465,7 @@ function renderSlide() {
     const detailsContent = (item.details || '').split('\n').map(line => {
         if (!line.trim()) return '';
         // Check headers
-        const isHeader = line.startsWith('**') || line.includes('Prompt:') || line.includes('Exemplo:') || line.includes('Ação:') || line.includes('Regra:') || line.includes('Estratégia:') || line.includes('Explicação:') || line.includes('A Resposta Correta:');
+        const isHeader = line.startsWith('**') || line.includes('Prompt:') || line.includes('Exemplo:') || line.includes('Ação:') || line.includes('Regra:') || line.includes('Estratégia:') || line.includes('Explicação:') || line.includes('A Resposta Correta:') || line.includes('Anonimizar') || line.includes('Iterar') || line.includes('Auto-crítica');
         const cleanLine = line.replace(/\*\*/g, '');
         
         return `<p class="${isHeader ? `font-bold text-lg mt-6 mb-2 ${accentColor}` : 'text-gray-300 mb-3'}">${cleanLine}</p>`;
@@ -639,12 +642,15 @@ function renderGridItems() {
     
     dom.gridItems.innerHTML = data.map(tip => {
         const isActive = tip.id === currentId;
+        // Use item icon if available, else default check circle
+        const iconHtml = isActive ? `<i data-lucide="check-circle" class="w-5 h-5 ${activeText}"></i>` : (tip.icon ? `<i data-lucide="${tip.icon}" class="w-5 h-5 text-white/30 group-hover:text-white/60"></i>` : '');
+
         return `
             <button onclick="goToSlide(${tip.id})" class="relative p-6 rounded-2xl text-left transition-all duration-200 border group 
                 ${isActive ? `${activeBg} ${activeBorder}` : 'bg-white/5 hover:bg-white/10 border-white/5 hover:border-white/20'}">
                 <div class="flex justify-between items-start mb-2">
                     <span class="text-2xl font-bold ${isActive ? activeText : 'text-white/30 group-hover:text-white/60'}">${tip.id}</span>
-                    ${isActive ? `<i data-lucide="check-circle" class="w-5 h-5 ${activeText}"></i>` : ''}
+                    ${iconHtml}
                 </div>
                 <p class="text-sm text-gray-300 leading-snug font-medium line-clamp-3">
                     ${tip.content}
