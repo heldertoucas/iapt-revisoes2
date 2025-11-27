@@ -1,4 +1,126 @@
 
+window.TIPS_DATA = [
+  {
+    id: 1,
+    icon: "brain-circuit",
+    content: "Ative sempre o modo «Pensamento».",
+    details: "**Ação:** Para problemas complexos, use modelos que \"pensam\" antes de responder (como o o1 ou modelos com *Thinking* ativado). Isso reduz erros de lógica e alucinações.\n\nUse isto para matemática, código ou planeamento estratégico. Para conversas simples, é desnecessário e lento."
+  },
+  {
+    id: 2,
+    icon: "lightbulb",
+    content: "Use o modelo IDEA para Prompts eficazes.",
+    details: "**Memorize:**\n(I)dentidade (Quem é a IA? Atribuir um papel para guiar o tom e o vocabulário)\n(D)ireção (O que fazer? Definir a tarefa, o público e o objetivo final)\n(E)xemplos (Qual deve ser o resultado? Fornecer um ou mais modelos da resposta esperada)\n(A)justes (Quais são as regras? Definir limites, tom, formato e o que evitar)."
+  },
+  {
+    id: 3,
+    icon: "users",
+    content: "Defina o público e o tom em cada nova conversa.",
+    details: "**O Problema:** A IA não sabe para quem está a escrever se não lhe disser.\n\n**Prompt:** \"Escreve para [PÚBLICO: Crianças/CEOs/Técnicos]. Usa um tom [TOM: Inspirador/Formal/Direto].\""
+  },
+  {
+    id: 4,
+    icon: "map",
+    content: "Peça um plano antes de iniciar um trabalho aprofundado.",
+    details: "**Estratégia:** Não peça o resultado final de imediato. Peça primeiro a estrutura para garantir o alinhamento.\n\n**Prompt:** \"Cria um esboço/plano detalhado para este relatório. Só depois de eu aprovar o plano é que avançamos para a escrita.\""
+  },
+  {
+    id: 5,
+    icon: "target",
+    content: "Mostre como seria um «bom resultado», guie a IA.",
+    details: "**Técnica Few-Shot:** A melhor forma de guiar a IA é dar um exemplo do que quer.\n\n**Exemplo:** \"Classifica estes emails. Exemplo: 'Email de Reclamação' -> Prioridade Alta. Agora classifica este: ...\""
+  },
+  {
+    id: 6,
+    icon: "shield-alert",
+    content: "A Privacidade é para manter, sempre.",
+    details: "**Regra de Ouro:** Nunca partilhe dados pessoais (PII) em IAs públicas.\n\n**Segurança:** Nunca coloque NIFs, moradas, dados bancários ou senhas. Use a \"Substituição Segura\": Troque \"João Silva, NIF 123\" por \"Cliente A\"."
+  },
+  {
+    id: 7,
+    icon: "search-check",
+    content: "Combata a Alucinação exigindo fontes.",
+    details: "**O Risco:** A IA inventa factos com confiança. Quando a verdade importa, exija fontes.\n\n**Prompt:** \"Responde apenas com base nos documentos que forneci. Se não souberes, diz 'Não sei', não inventes.\""
+  },
+  {
+    id: 8,
+    icon: "user-check",
+    content: "A IA sugere, mas você decide (Seja responsável).",
+    details: "**Ética:** A IA é o copiloto, você é o piloto.\n\nNunca deixe a IA tomar uma decisão final crítica (como enviar um email ou aprovar um candidato) sem revisão humana. Você é o responsável legal."
+  },
+  {
+    id: 9,
+    icon: "database",
+    content: "Obtenha respostas a partir dos seus ficheiros, com RAG.",
+    details: "**Conceito:** Para uso profissional, por exemplo, a IA deve consultar os seus ficheiros internos, não a internet geral.\n\nO sistema *Retrieval-Augmented Generation* permite à IA ler os seus PDFs e Manuais para dar respostas factuais baseadas na sua organização."
+  },
+  {
+    id: 10,
+    icon: "scissors",
+    content: "Limite cada pedido a uma tarefa principal.",
+    details: "**Estratégia:** Prompts \"tudo em um\" geram resultados medíocres. Divida para conquistar.\n\nEm vez de \"Cria um site e o conteúdo\", faça: 1. \"Cria a estrutura do site\"; 2. \"Gera o conteúdo para a página 'Sobre'\"."
+  },
+  {
+    id: 11,
+    icon: "git-merge",
+    content: "Peça à IA para explicar o seu raciocínio (Cadeia de Pensamento).",
+    details: "**Prompt:** \"Pensa passo a passo\".\n\nPara lógica e matemática, force a IA a mostrar o trabalho. Ao forçar a IA a explicar o raciocínio antes da resposta final, a precisão aumenta drasticamente."
+  },
+  {
+    id: 12,
+    icon: "wrench",
+    content: "Não use a mesma ferramenta para tudo (Há muitas IAs).",
+    details: "**Guia:**\n*   **ChatGPT (o1/Voice):** Raciocínio complexo e Conversa.\n*   **Claude:** Escrita Humanizada e PDFs grandes.\n*   **Gemini:** Ecossistema Google e Vídeo.\n*   **Perplexity:** Pesquisa com Fontes."
+  },
+  {
+    id: 13,
+    icon: "message-square-warning",
+    content: "Peça à IA para criticar a sua própria resposta.",
+    details: "**O Problema:** A IA é \"agradável\" por defeito e pode esconder falhas. Force o sentido crítico.\n\n**Prompt:** \"Analisa a tua resposta anterior. Aponta 3 falhas lógicas ou áreas onde foste vago e reescreve uma versão melhorada.\""
+  },
+  {
+    id: 14,
+    icon: "globe",
+    content: "Ative a pesquisa na web para obter novos factos.",
+    details: "**Limitação:** A IA tem uma data de corte de conhecimento. Para factos atuais, obrigue-a a ir à web.\n\n**Prompt:** \"Pesquisa na web as últimas notícias sobre [TEMA] de hoje e resume. Não uses o teu conhecimento pré-treinado.\""
+  },
+  {
+    id: 15,
+    icon: "layout-template",
+    content: "Use o modo Canvas para rascunhos longos e edições.",
+    details: "**Dica:** Para textos grandes ou código, use interfaces de edição lado-a-lado.\n\nPermite selecionar apenas um parágrafo específico e pedir \"encurta isto\" ou \"torna isto mais formal\", sem regenerar tudo."
+  },
+  {
+    id: 16,
+    icon: "help-circle",
+    content: "Peça que identifique e sinalize informações em falta.",
+    details: "**O Problema:** A IA tende a \"tapar buracos\" com suposições. Peça para ela identificar o que falta.\n\n**Prompt:** \"Antes de responderes, diz-me que informações te faltam para dar uma resposta perfeita.\""
+  },
+  {
+    id: 17,
+    icon: "settings-2",
+    content: "Poupe tempo amanhã, escreva instruções personalizadas hoje.",
+    details: "**Configuração:** Não repita quem é em cada chat.\n\nVá às definições e escreva \"Sou [Cargo]. Responde sempre em PT-PT. Sê formal.\" A IA lembrará disto para sempre."
+  },
+  {
+    id: 18,
+    icon: "save",
+    content: "Transforme conversas fortes em modelos reutilizáveis.",
+    details: "**Automação:** Se um chat funcionou muito bem, guarde-o ou crie um \"GPT Personalizado\".\n\nSe ensinou a IA a fazer uma tarefa complexa, guarde esse \"estado\" para não ter de ensinar tudo de novo na próxima vez."
+  },
+  {
+    id: 19,
+    icon: "refresh-cw",
+    content: "Exija mais à IA, refine a conversa. Não aceite o primeiro rascunho.",
+    details: "**Estratégia:** A primeira resposta é apenas o início. Dialogar com a IA melhora o resultado exponencialmente.\n\nTrate a IA como um estagiário. Dê feedback: \"Gostei da estrutura, mas o tom está muito formal. Reescreve de forma mais simples.\""
+  },
+  {
+    id: 20,
+    icon: "rocket",
+    content: "Não use o ChatGPT para ceder à preguiça. Utilize-a para ser ainda melhor.",
+    details: "**Filosofia:** A mentalidade certa define o resultado.\n\nA IA aumenta a sua capacidade, não substitui o seu cérebro. Use a IA para fazer o rascunho, mas ponha sempre a sua \"mão\" na versão final."
+  }
+];
 
 window.REVIEW_DATA = [
   {
@@ -27,15 +149,15 @@ window.REVIEW_DATA = [
   },
   {
     id: 5,
-    icon: "layout-list",
-    content: "O Segredo do Prompting: Framework IDEA",
-    details: `**A Estrutura:**\nPara evitar resultados vagos, usamos estruturas como o IDEA para garantir que damos o contexto necessário.\n\n**Os 4 Pilares:**\n*   **I (Identidade):** Quem é a IA? (Papel)\n*   **D (Direção):** O que deve fazer? (Tarefa)\n*   **E (Exemplos):** Como deve parecer? (Modelo)\n*   **A (Ajustes):** Quais são as regras? (Limites)`
+    icon: "clipboard-list",
+    content: "O Segredo do Prompting: Modelo RTF",
+    details: `**A Estrutura:**\nPara obter resultados precisos, deve estruturar o seu prompt seguindo o modelo **RTF**.\n\n**Os 3 Pilares:**\n*   **R (Role/Papel):** Quem é a IA? (Ex: "Age como um Nutricionista")\n*   **T (Task/Tarefa):** O que deve fazer? (Ex: "Cria um plano semanal")\n*   **F (Format/Formato):** Como deve ser a resposta? (Ex: "Numa tabela Excel")`
   },
   {
     id: 6,
-    icon: "user-cog",
-    content: "Personas: A Técnica «Age como...»",
-    details: `**A Técnica:**\nPedir à IA para "Agir como um nutricionista" ou "Um historiador" não é uma brincadeira.\n\n**Conceito Chave:**\nEsta técnica serve para **filtrar o vasto conhecimento** da IA. Ajuda o modelo a adotar o **vocabulário, tom e perspetiva** corretos para aquela especialidade, ignorando informações irrelevantes de outras áreas, resultando numa resposta mais focada.`
+    icon: "sliders-horizontal",
+    content: "Técnicas para Bons Resultados",
+    details: `**Anonimizar a informação:**\nProteja dados sensíveis. Ex: "Escreve um email dirigido ao munícipe X, sobre o pedido de informações acerca do processo Y".\n\n**Iterar:**\nNão aceite a primeira resposta. Ex: "Melhora a tua resposta anterior. O texto deve ser mais formal e não deve conter termos como 'usuário'".\n\n**Auto-crítica:**\nPeça à IA para se corrigir. Ex: "Revê criticamente a tua resposta e sugere áreas de melhoria. Aplica as melhorias e apresenta o plano final revisto."`
   },
   {
     id: 7,
@@ -45,21 +167,21 @@ window.REVIEW_DATA = [
   },
   {
     id: 8,
-    icon: "settings-2",
-    content: "Personalização: Custom Instructions & GPTs",
-    details: `**A Ferramenta:**\nExistem formas de evitar repetir o contexto em cada conversa.\n\n**Diferença:**\n*   **Instruções Personalizadas:** Definem quem somos e como queremos que a IA responda (aplicam-se a *todas* as conversas).\n*   **GPTs/Gems:** São versões da IA configuradas para **tarefas concretas** (ex: "Tutor de Excel"), que podem ter acesso a **ficheiros específicos** carregados pelo utilizador.`
+    icon: "bot",
+    content: "Agentes de IA Copilot: Assistentes Personalizados",
+    details: `**A Definição:**\nUm Agente de IA (como o "Mestre de Prompts") não é apenas um chat genérico.\n\n**Conceito Chave:**\nÉ uma versão da IA configurada com **instruções específicas** para realizar tarefas concretas. O seu **papel, tom e regras** são definidos previamente pelo utilizador para garantir consistência e eficácia numa função especializada (ex: corrigir ortografia ou gerar código).`
   },
   {
     id: 9,
-    icon: "image",
-    content: "Imagens: Prompt Fraco vs. Forte",
-    details: `**A Diferença:**\nNa geração de imagens, a vagueza é inimiga da qualidade.\n\n**Conceito Chave:**\n*   *Fraco:* "Uma imagem bonita" (Deixa tudo à imaginação da IA, resultados aleatórios).\n*   *Forte:* Descreve o **estilo visual**, iluminação, composição, ambiente e detalhes específicos. Quanto mais descritivo for o prompt, maior o controlo sobre o resultado final.`
+    icon: "cloud",
+    content: "Conceito «Equipa ON»: Trabalho Moderno",
+    details: `**A Definição:**\nO modelo de trabalho antigo baseava-se em enviar ficheiros por email ("v1", "v2_final").\n\n**A Mudança:**\nUma "Equipa ON" trabalha onde os documentos **vivem na nuvem**, existe uma **única versão** para cada ficheiro (single source of truth) e a edição é feita em **tempo real e em simultâneo** por vários colegas (co-autoria).`
   },
   {
     id: 10,
-    icon: "search-check",
-    content: "Investigação: Fontes Fechadas vs. Abertas",
-    details: `**A Estratégia:**\nPara estudo ou trabalho sério, confiar no conhecimento geral da IA é arriscado.\n\n**Conceito Chave:**\nA utilização de ferramentas (como NotebookLM ou RAG) que permitem conversar baseando-se **exclusivamente nos documentos que o utilizador carrega** é superior. Isto garante que a IA responde apenas com base nas fontes fornecidas, eliminando a invenção de factos externos.`
+    icon: "search",
+    content: "Investigação: Copilot Web vs. Grounding",
+    details: `**A Estratégia:**\nSaber onde a IA vai buscar a informação é crucial para evitar erros.\n\n**Conceito Chave:**\n*   **Copilot Web:** Usa a pesquisa na internet para encontrar factos recentes (notícias de hoje).\n*   **Grounding (Ancoragem):** Obriga a IA a responder baseando-se **exclusivamente nos seus documentos internos** (Word, PDF) ou links fornecidos, garantindo que não inventa dados externos.`
   }
 ];
 
@@ -90,13 +212,13 @@ window.COPILOT_DATA = [
   },
   {
     id: 5,
-    icon: "clipboard-list",
+    icon: "layout-list",
     content: "O Segredo do Prompting: Modelo RTF",
     details: `**A Estrutura:**\nPara obter resultados precisos, deve estruturar o seu prompt seguindo o modelo **RTF**.\n\n**Os 3 Pilares:**\n*   **R (Role/Papel):** Quem é a IA? (Ex: "Age como um Nutricionista")\n*   **T (Task/Tarefa):** O que deve fazer? (Ex: "Cria um plano semanal")\n*   **F (Format/Formato):** Como deve ser a resposta? (Ex: "Numa tabela Excel")`
   },
   {
     id: 6,
-    icon: "wrench",
+    icon: "wand-2",
     content: "Técnicas para Bons Resultados",
     details: `**Anonimizar a informação:**\nProteja dados sensíveis. Ex: "Escreve um email dirigido ao munícipe X, sobre o pedido de informações acerca do processo Y".\n\n**Iterar:**\nNão aceite a primeira resposta. Ex: "Melhora a tua resposta anterior. O texto deve ser mais formal e não deve conter termos como 'usuário'".\n\n**Auto-crítica:**\nPeça à IA para se corrigir. Ex: "Revê criticamente a tua resposta e sugere áreas de melhoria. Aplica as melhorias e apresenta o plano final revisto."`
   },
@@ -114,7 +236,7 @@ window.COPILOT_DATA = [
   },
   {
     id: 9,
-    icon: "users",
+    icon: "cloud-lightning",
     content: "Conceito «Equipa ON»: Trabalho Moderno",
     details: `**A Definição:**\nO modelo de trabalho antigo baseava-se em enviar ficheiros por email ("v1", "v2_final").\n\n**A Mudança:**\nUma "Equipa ON" trabalha onde os documentos **vivem na nuvem** (Teams/SharePoint), existe uma **única versão** para cada ficheiro (single source of truth) e a edição é feita em **tempo real e em simultâneo** por vários colegas (co-autoria).`
   },

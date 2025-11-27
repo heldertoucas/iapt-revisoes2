@@ -1,5 +1,6 @@
 
 
+
 // --- HELPER FUNCTIONS (Hoisted) ---
 
 function getUrlParams() {
@@ -36,39 +37,9 @@ function updateUrl() {
 }
 
 function getCurrentData() {
-    // Ensure data exists before returning
     if (window.state.mode === 'review') return window.REVIEW_DATA || [];
     if (window.state.mode === 'copilot') return window.COPILOT_DATA || [];
-    return window.state.tipsData || [];
-}
-
-function getTipIcon(id) {
-    // For markdown loaded tips, we fallback to an ID map if icon property doesn't exist,
-    // or just a default. Since markdown parsing is simple, we'll use a map here for 'tips' mode specifically
-    // or rely on a default.
-    const TIPS_ICONS_MAP = {
-        1: 'brain-circuit',
-        2: 'terminal',
-        3: 'users',
-        4: 'map',
-        5: 'target',
-        6: 'shield-alert',
-        7: 'file-search',
-        8: 'user-check',
-        9: 'library',
-        10: 'list-todo',
-        11: 'git-merge',
-        12: 'wrench',
-        13: 'message-circle-warning',
-        14: 'globe',
-        15: 'layout-template',
-        16: 'help-circle',
-        17: 'settings-2',
-        18: 'save',
-        19: 'sliders-horizontal',
-        20: 'rocket'
-    };
-    return TIPS_ICONS_MAP[id] || 'lightbulb';
+    return window.TIPS_DATA || [];
 }
 
 // --- CORE ACTIONS (Exposed Globally) ---
@@ -158,7 +129,6 @@ window.goToSlide = goToSlide;
 const initialParams = getUrlParams();
 window.state = {
     mode: initialParams.mode,
-    tipsData: [], // Will be loaded
     currentId: initialParams.currentId,
     showDetails: false,
     isGridOpen: false
@@ -166,52 +136,6 @@ window.state = {
 
 // Global DOM Cache
 let dom = {};
-
-// Parse Markdown Logic
-function parseMarkdown(markdown) {
-    const lines = markdown.split('\n');
-    const tips = [];
-    let currentTip = null;
-    let currentDetails = [];
-
-    lines.forEach(line => {
-        const headerMatch = line.match(/^##\s+(\d+)\.\s+(.+)/);
-        if (headerMatch) {
-            if (currentTip) {
-                currentTip.details = currentDetails.join('\n').trim();
-                tips.push(currentTip);
-            }
-            currentTip = { id: parseInt(headerMatch[1]), content: headerMatch[2].trim() };
-            currentDetails = [];
-        } else if (currentTip) {
-            if (line.trim() !== '' || (currentDetails.length > 0 && currentDetails[currentDetails.length-1] !== '')) {
-                currentDetails.push(line);
-            }
-        }
-    });
-    if (currentTip) {
-        currentTip.details = currentDetails.join('\n').trim();
-        tips.push(currentTip);
-    }
-    return tips;
-}
-
-async function loadTips() {
-    try {
-        const response = await fetch('tips.md');
-        if (!response.ok) throw new Error("Status " + response.status);
-        const text = await response.text();
-        window.state.tipsData = parseMarkdown(text);
-        
-        // Validation: If ID is too high, reset
-        if (window.state.mode === 'tips' && window.state.currentId > window.state.tipsData.length) {
-            window.state.currentId = 1;
-        }
-    } catch (e) {
-        console.warn("Failed to load tips.md, using fallback.", e);
-        window.state.tipsData = [{id: 1, content: "Bem-vindo à Masterclass", details: "**Dica:** Certifique-se que o ficheiro tips.md está na pasta raiz."}];
-    }
-}
 
 // Main Entry Point
 document.addEventListener('DOMContentLoaded', async () => {
@@ -237,7 +161,6 @@ document.addEventListener('DOMContentLoaded', async () => {
     // Initialize Icons first run
     if (typeof lucide !== 'undefined') lucide.createIcons();
 
-    await loadTips();
     render();
 
     // Event Listeners
@@ -440,21 +363,21 @@ function renderSlide() {
 
     // Get Main Icon for Tips
     let mainIconHTML = '';
-    // Use the icon from the item data if available, otherwise use helper for "tips" mode
-    const iconName = item.icon || getTipIcon(item.id);
+    const iconName = item.icon || 'lightbulb';
     
-    // We show the large icon for all modes now to utilize the new data icons
+    // We show the large icon for all modes now
+    // Doubled size: w-24 h-24 (96px)
     mainIconHTML = `
-        <div class="mb-6 flex justify-center animate-slide-up">
-            <div class="p-4 rounded-full bg-white/5 backdrop-blur border border-white/10 shadow-2xl">
-                <i data-lucide="${iconName}" class="w-12 h-12 ${accentColor} drop-shadow-[0_0_15px_rgba(255,255,255,0.1)]"></i>
+        <div class="mb-12 flex justify-center animate-slide-up" style="animation-delay: 0.15s">
+            <div class="p-6 rounded-full bg-white/5 backdrop-blur border border-white/10 shadow-2xl">
+                <i data-lucide="${iconName}" class="w-24 h-24 ${accentColor} drop-shadow-[0_0_25px_rgba(255,255,255,0.15)]"></i>
             </div>
         </div>
     `;
 
     // Generate Badge HTML
     const badgeHTML = `
-        <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border backdrop-blur-sm ${badgeBg} animate-fade-in">
+        <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border backdrop-blur-sm ${badgeBg} animate-fade-in mb-8">
             <i data-lucide="${iconType}" class="w-4 h-4 ${accentColor}"></i>
             <span class="font-bold text-sm tracking-widest uppercase ${accentColor}">
                 ${badgeText}
@@ -483,14 +406,18 @@ function renderSlide() {
                     <span class="text-[15rem] md:text-[35rem] font-black leading-none tracking-tighter text-white/[0.03] font-sans">${item.id}</span>
                 </div>
                 
-                ${mainIconHTML}
-
-                <div class="mb-8">${badgeHTML}</div>
+                <!-- 1. Badge -->
+                ${badgeHTML}
                 
+                <!-- 2. Content Title -->
                 <h1 class="text-2xl md:text-4xl lg:text-6xl font-bold text-white leading-tight tracking-tight mb-12 max-w-5xl mx-auto drop-shadow-2xl animate-slide-up" style="animation-delay: 0.1s">
                     ${item.content}
                 </h1>
 
+                <!-- 3. Big Icon -->
+                ${mainIconHTML}
+
+                <!-- 4. Action Button -->
                 <div class="flex flex-col items-center w-full animate-slide-up" style="animation-delay: 0.2s">
                     <button onclick="toggleDetails()" class="group flex items-center gap-3 px-8 py-4 rounded-full transition-all duration-300 text-lg font-bold tracking-wide shadow-xl hover:scale-105 ${btnClass}">
                         <i data-lucide="book-open" class="w-5 h-5"></i>
