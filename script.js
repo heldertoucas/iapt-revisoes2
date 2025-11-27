@@ -366,18 +366,18 @@ function renderSlide() {
     const iconName = item.icon || 'lightbulb';
     
     // Large icon for all modes
-    // 3rd item in sequence -> delay 150ms
+    // 3rd item in sequence -> delay 500ms
     mainIconHTML = `
-        <div class="mb-12 flex justify-center animate-slide-up opacity-0" style="animation-delay: 150ms">
+        <div class="mb-12 flex justify-center animate-slide-up opacity-0" style="animation-delay: 500ms">
             <div class="p-6 rounded-full bg-white/5 backdrop-blur border border-white/10 shadow-2xl">
                 <i data-lucide="${iconName}" class="w-24 h-24 ${accentColor} drop-shadow-[0_0_25px_rgba(255,255,255,0.15)]"></i>
             </div>
         </div>
     `;
 
-    // Generate Badge HTML - 1st item -> delay 0ms
+    // Generate Badge HTML - 1st item -> delay 100ms
     const badgeHTML = `
-        <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border backdrop-blur-sm ${badgeBg} animate-slide-up opacity-0 mb-8" style="animation-delay: 0ms">
+        <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border backdrop-blur-sm ${badgeBg} animate-slide-up opacity-0 mb-8" style="animation-delay: 100ms">
             <i data-lucide="${iconType}" class="w-4 h-4 ${accentColor}"></i>
             <span class="font-bold text-sm tracking-widest uppercase ${accentColor}">
                 ${badgeText}
@@ -406,19 +406,19 @@ function renderSlide() {
                     <span class="text-[15rem] md:text-[35rem] font-black leading-none tracking-tighter text-white/[0.03] font-sans">${item.id}</span>
                 </div>
                 
-                <!-- 1. Badge (0ms) -->
+                <!-- 1. Badge (100ms) -->
                 ${badgeHTML}
                 
-                <!-- 2. Content Title (75ms) -->
-                <h1 class="text-2xl md:text-4xl lg:text-6xl font-bold text-white leading-tight tracking-tight mb-12 max-w-5xl mx-auto drop-shadow-2xl animate-slide-up opacity-0" style="animation-delay: 75ms">
+                <!-- 2. Content Title (300ms) -->
+                <h1 class="text-2xl md:text-4xl lg:text-6xl font-bold text-white leading-tight tracking-tight mb-12 max-w-5xl mx-auto drop-shadow-2xl animate-slide-up opacity-0" style="animation-delay: 300ms">
                     ${item.content}
                 </h1>
 
-                <!-- 3. Big Icon (150ms) -->
+                <!-- 3. Big Icon (500ms) -->
                 ${mainIconHTML}
 
-                <!-- 4. Action Button (225ms) -->
-                <div class="flex flex-col items-center w-full animate-slide-up opacity-0" style="animation-delay: 225ms">
+                <!-- 4. Action Button (700ms) -->
+                <div class="flex flex-col items-center w-full animate-slide-up opacity-0" style="animation-delay: 700ms">
                     <button onclick="toggleDetails()" class="group flex items-center gap-3 px-8 py-4 rounded-full transition-all duration-300 text-lg font-bold tracking-wide shadow-xl hover:scale-105 ${btnClass}">
                         <i data-lucide="book-open" class="w-5 h-5"></i>
                         <span>${isCopilot ? "Ver Resposta" : "Saber mais"}</span>
