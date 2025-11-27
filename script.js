@@ -9,7 +9,7 @@ function getUrlParams() {
     
     // Validate Mode
     let mode = 'tips';
-    if (['tips', 'review', 'tools'].includes(modeParam)) {
+    if (['tips', 'review', 'tools', 'copilot'].includes(modeParam)) {
         mode = modeParam;
     }
 
@@ -38,6 +38,7 @@ function updateUrl() {
 function getCurrentData() {
     // Ensure data exists before returning
     if (window.state.mode === 'review') return window.REVIEW_DATA || [];
+    if (window.state.mode === 'copilot') return window.COPILOT_DATA || [];
     return window.state.tipsData || [];
 }
 
@@ -270,7 +271,7 @@ function render() {
         if (dom.footerNav) dom.footerNav.style.pointerEvents = 'none';
         renderTools();
     } else {
-        // Slide Modes (Tips & Review)
+        // Slide Modes (Tips, Review, Copilot)
         if (dom.progressContainer) dom.progressContainer.style.opacity = '1';
         if (dom.footerNav) dom.footerNav.style.opacity = '1';
         if (dom.footerNav) dom.footerNav.style.pointerEvents = 'auto';
@@ -298,6 +299,10 @@ function updateThemeVisuals() {
         // Dark Teal/Emerald
         bgClass += "bg-gradient-to-br from-[#022c22] via-[#064e3b] to-[#111827]";
         circleColor = "border-emerald-500/20";
+    } else if (mode === 'copilot') {
+        // Dark Orange/Amber
+        bgClass += "bg-gradient-to-br from-[#431407] via-[#7c2d12] to-[#0f172a]";
+        circleColor = "border-brand-orange/20";
     } else if (mode === 'tools') {
         // Dark Blue/Slate
         bgClass += "bg-gradient-to-br from-[#0f172a] via-[#1e293b] to-[#172554]";
@@ -312,10 +317,16 @@ function updateThemeVisuals() {
     // 2. Button Styling (Next Button specifically changes color)
     const nextBtn = document.getElementById('btn-next');
     if (nextBtn) {
-        nextBtn.className = "p-3.5 rounded-full font-bold border disabled:opacity-30 disabled:bg-black/40 disabled:text-white disabled:border-white/10 disabled:cursor-not-allowed transition-all hover:scale-110 backdrop-blur-md shadow-lg " +
-        (mode === 'review' 
-            ? "bg-emerald-500 text-black border-emerald-500 hover:bg-emerald-400 hover:border-emerald-400" 
-            : "bg-brand-teal text-brand-dark border-brand-teal hover:bg-brand-cyan hover:border-brand-cyan");
+        let btnClasses = "p-3.5 rounded-full font-bold border disabled:opacity-30 disabled:bg-black/40 disabled:text-white disabled:border-white/10 disabled:cursor-not-allowed transition-all hover:scale-110 backdrop-blur-md shadow-lg ";
+        
+        if (mode === 'review') {
+            btnClasses += "bg-emerald-500 text-black border-emerald-500 hover:bg-emerald-400 hover:border-emerald-400";
+        } else if (mode === 'copilot') {
+            btnClasses += "bg-brand-orange text-white border-brand-orange hover:bg-orange-500 hover:border-orange-500";
+        } else {
+            btnClasses += "bg-brand-teal text-brand-dark border-brand-teal hover:bg-brand-cyan hover:border-brand-cyan";
+        }
+        nextBtn.className = btnClasses;
     }
 }
 
@@ -323,6 +334,7 @@ function updateHeaderState() {
     const btns = {
         tips: document.getElementById('btn-tips'),
         review: document.getElementById('btn-review'),
+        copilot: document.getElementById('btn-copilot'),
         tools: document.getElementById('btn-tools')
     };
 
@@ -333,16 +345,18 @@ function updateHeaderState() {
     // Reset all
     Object.values(btns).forEach(btn => {
         if(!btn) return;
-        btn.className = `flex items-center gap-2 px-5 py-2.5 rounded-full font-bold text-xs tracking-wide transition-all duration-300 ${inactiveClass}`;
+        btn.className = `flex items-center gap-2 px-4 py-2.5 rounded-full font-bold text-xs tracking-wide transition-all duration-300 shrink-0 ${inactiveClass}`;
     });
 
     // Set Active
     if (window.state.mode === 'tips' && btns.tips) {
-        btns.tips.className = `flex items-center gap-2 px-5 py-2.5 rounded-full font-bold text-xs tracking-wide transition-all duration-300 bg-brand-teal text-brand-dark shadow-[0_0_20px_rgba(45,212,191,0.4)] scale-105`;
+        btns.tips.className = `flex items-center gap-2 px-4 py-2.5 rounded-full font-bold text-xs tracking-wide transition-all duration-300 shrink-0 bg-brand-teal text-brand-dark shadow-[0_0_20px_rgba(45,212,191,0.4)] scale-105`;
     } else if (window.state.mode === 'review' && btns.review) {
-        btns.review.className = `flex items-center gap-2 px-5 py-2.5 rounded-full font-bold text-xs tracking-wide transition-all duration-300 bg-emerald-500 text-emerald-950 shadow-[0_0_20px_rgba(16,185,129,0.4)] scale-105`;
+        btns.review.className = `flex items-center gap-2 px-4 py-2.5 rounded-full font-bold text-xs tracking-wide transition-all duration-300 shrink-0 bg-emerald-500 text-emerald-950 shadow-[0_0_20px_rgba(16,185,129,0.4)] scale-105`;
+    } else if (window.state.mode === 'copilot' && btns.copilot) {
+        btns.copilot.className = `flex items-center gap-2 px-4 py-2.5 rounded-full font-bold text-xs tracking-wide transition-all duration-300 shrink-0 bg-brand-orange text-white shadow-[0_0_20px_rgba(249,115,22,0.4)] scale-105`;
     } else if (window.state.mode === 'tools' && btns.tools) {
-        btns.tools.className = `flex items-center gap-2 px-5 py-2.5 rounded-full font-bold text-xs tracking-wide transition-all duration-300 bg-blue-500 text-white shadow-[0_0_20px_rgba(59,130,246,0.4)] scale-105`;
+        btns.tools.className = `flex items-center gap-2 px-4 py-2.5 rounded-full font-bold text-xs tracking-wide transition-all duration-300 shrink-0 bg-blue-500 text-white shadow-[0_0_20px_rgba(59,130,246,0.4)] scale-105`;
     }
 }
 
@@ -356,6 +370,8 @@ function updateProgressBar() {
     // Change color based on mode
     if (window.state.mode === 'review') {
         dom.progressBar.className = "h-full bg-gradient-to-r from-emerald-500 to-teal-400 transition-all duration-500 ease-out shadow-[0_0_10px_rgba(16,185,129,0.5)]";
+    } else if (window.state.mode === 'copilot') {
+        dom.progressBar.className = "h-full bg-gradient-to-r from-orange-600 to-amber-500 transition-all duration-500 ease-out shadow-[0_0_10px_rgba(249,115,22,0.5)]";
     } else {
         dom.progressBar.className = "h-full bg-gradient-to-r from-brand-teal to-brand-cyan transition-all duration-500 ease-out shadow-[0_0_10px_rgba(45,212,191,0.5)]";
     }
@@ -390,26 +406,39 @@ function renderSlide() {
     if (!item) return;
 
     const isReview = window.state.mode === 'review';
-    const isGoldenRule = !isReview && [6, 13, 20].includes(item.id);
+    const isCopilot = window.state.mode === 'copilot';
+    const isGoldenRule = !isReview && !isCopilot && [6, 13, 20].includes(item.id);
     
     // Dynamic Colors for elements
     let accentColor = "text-brand-teal";
     let badgeBg = "bg-brand-teal/10 border-brand-teal/30";
     let btnClass = "bg-gradient-to-r from-brand-teal to-brand-cyan text-brand-dark hover:shadow-[0_0_20px_rgba(45,212,191,0.3)]";
+    let iconType = 'sparkles';
+    let badgeText = `Dica #${item.id}`;
     
     if (isReview) {
         accentColor = "text-emerald-400";
         badgeBg = "bg-emerald-500/10 border-emerald-500/30";
         btnClass = "bg-gradient-to-r from-emerald-500 to-teal-500 text-black hover:shadow-[0_0_20px_rgba(16,185,129,0.3)]";
+        iconType = 'graduation-cap';
+        badgeText = `Conceito #${item.id}`;
+    } else if (isCopilot) {
+        accentColor = "text-brand-orange";
+        badgeBg = "bg-brand-orange/10 border-brand-orange/30";
+        btnClass = "bg-gradient-to-r from-orange-600 to-amber-500 text-white hover:shadow-[0_0_20px_rgba(249,115,22,0.3)]";
+        iconType = 'bot';
+        badgeText = `Quiz Copilot #${item.id}`;
     } else if (isGoldenRule) {
         accentColor = "text-amber-400";
         badgeBg = "bg-amber-500/20 border-amber-500/50";
         btnClass = "bg-gradient-to-r from-amber-400 to-amber-600 text-white shadow-amber-500/25";
+        iconType = 'trophy';
+        badgeText = 'Regra de Ouro';
     }
 
     // Get Main Icon for Tips
     let mainIconHTML = '';
-    if (!isReview && !isGoldenRule) {
+    if (!isReview && !isGoldenRule && !isCopilot) {
         const iconName = getTipIcon(item.id);
         mainIconHTML = `
             <div class="mb-6 flex justify-center animate-slide-up">
@@ -423,9 +452,9 @@ function renderSlide() {
     // Generate Badge HTML
     const badgeHTML = `
         <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border backdrop-blur-sm ${badgeBg} animate-fade-in">
-            <i data-lucide="${isGoldenRule ? 'trophy' : (isReview ? 'graduation-cap' : 'star')}" class="w-4 h-4 ${accentColor}"></i>
+            <i data-lucide="${iconType}" class="w-4 h-4 ${accentColor}"></i>
             <span class="font-bold text-sm tracking-widest uppercase ${accentColor}">
-                ${isGoldenRule ? 'Regra de Ouro' : (isReview ? `Conceito #${item.id}` : `Dica #${item.id}`)}
+                ${badgeText}
             </span>
         </div>`;
 
@@ -433,7 +462,7 @@ function renderSlide() {
     const detailsContent = (item.details || '').split('\n').map(line => {
         if (!line.trim()) return '';
         // Check headers
-        const isHeader = line.startsWith('**') || line.includes('Prompt:') || line.includes('Exemplo:') || line.includes('Ação:') || line.includes('Regra:') || line.includes('Estratégia:');
+        const isHeader = line.startsWith('**') || line.includes('Prompt:') || line.includes('Exemplo:') || line.includes('Ação:') || line.includes('Regra:') || line.includes('Estratégia:') || line.includes('Explicação:') || line.includes('A Resposta Correta:');
         const cleanLine = line.replace(/\*\*/g, '');
         
         return `<p class="${isHeader ? `font-bold text-lg mt-6 mb-2 ${accentColor}` : 'text-gray-300 mb-3'}">${cleanLine}</p>`;
@@ -455,28 +484,28 @@ function renderSlide() {
 
                 <div class="mb-8">${badgeHTML}</div>
                 
-                <h1 class="text-3xl md:text-5xl lg:text-7xl font-bold text-white leading-tight tracking-tight mb-12 max-w-5xl mx-auto drop-shadow-2xl animate-slide-up" style="animation-delay: 0.1s">
+                <h1 class="text-2xl md:text-4xl lg:text-6xl font-bold text-white leading-tight tracking-tight mb-12 max-w-5xl mx-auto drop-shadow-2xl animate-slide-up" style="animation-delay: 0.1s">
                     ${item.content}
                 </h1>
 
                 <div class="flex flex-col items-center w-full animate-slide-up" style="animation-delay: 0.2s">
                     <button onclick="toggleDetails()" class="group flex items-center gap-3 px-8 py-4 rounded-full transition-all duration-300 text-lg font-bold tracking-wide shadow-xl hover:scale-105 ${btnClass}">
                         <i data-lucide="book-open" class="w-5 h-5"></i>
-                        <span>Saber mais</span>
+                        <span>${isCopilot ? "Ver Resposta" : "Saber mais"}</span>
                     </button>
                 </div>
             </div>
 
             <!-- Details Panel (Overlay) -->
             <div class="absolute bottom-0 md:bottom-24 left-0 right-0 mx-auto w-full md:w-[800px] max-h-[60vh] z-50 transition-all duration-500 ease-out-expo ${window.state.showDetails ? 'translate-y-0 opacity-100 pointer-events-auto' : 'translate-y-20 opacity-0 pointer-events-none'}">
-                <div class="glass-panel rounded-t-3xl md:rounded-3xl p-8 md:p-10 flex flex-col h-full shadow-2xl ${isGoldenRule ? 'border-amber-500/30' : ''}">
+                <div class="glass-panel rounded-t-3xl md:rounded-3xl p-8 md:p-10 flex flex-col h-full shadow-2xl ${isGoldenRule ? 'border-amber-500/30' : (isCopilot ? 'border-brand-orange/30' : '')}">
                     
                     <div class="flex items-center justify-between mb-6 border-b border-white/10 pb-4 shrink-0">
                         <div class="flex items-center gap-3">
-                            <div class="p-2 rounded-lg ${isReview ? 'bg-emerald-500/20' : 'bg-brand-teal/20'}">
-                                <i data-lucide="${isReview ? 'graduation-cap' : 'sparkles'}" class="w-5 h-5 ${accentColor}"></i>
+                            <div class="p-2 rounded-lg ${isReview ? 'bg-emerald-500/20' : (isCopilot ? 'bg-brand-orange/20' : 'bg-brand-teal/20')}">
+                                <i data-lucide="${iconType}" class="w-5 h-5 ${accentColor}"></i>
                             </div>
-                            <h3 class="text-xl font-bold text-white tracking-tight">Explicação Detalhada</h3>
+                            <h3 class="text-xl font-bold text-white tracking-tight">${isCopilot ? "Solução & Explicação" : "Explicação Detalhada"}</h3>
                         </div>
                         <button onclick="toggleDetails()" class="p-2 rounded-full hover:bg-white/10 text-white/60 hover:text-white transition-colors">
                             <i data-lucide="x" class="w-6 h-6"></i>
@@ -591,11 +620,22 @@ function renderGridItems() {
     const data = getCurrentData();
     const currentId = window.state.currentId;
     const isReview = window.state.mode === 'review';
+    const isCopilot = window.state.mode === 'copilot';
     
     // Colors based on mode
-    const activeBorder = isReview ? 'border-emerald-500' : 'border-brand-teal';
-    const activeText = isReview ? 'text-emerald-400' : 'text-brand-teal';
-    const activeBg = isReview ? 'bg-emerald-500/10' : 'bg-brand-teal/10';
+    let activeBorder = 'border-brand-teal';
+    let activeText = 'text-brand-teal';
+    let activeBg = 'bg-brand-teal/10';
+
+    if (isReview) {
+        activeBorder = 'border-emerald-500';
+        activeText = 'text-emerald-400';
+        activeBg = 'bg-emerald-500/10';
+    } else if (isCopilot) {
+        activeBorder = 'border-brand-orange';
+        activeText = 'text-brand-orange';
+        activeBg = 'bg-brand-orange/10';
+    }
     
     dom.gridItems.innerHTML = data.map(tip => {
         const isActive = tip.id === currentId;

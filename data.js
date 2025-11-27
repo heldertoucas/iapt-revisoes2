@@ -53,6 +53,59 @@ window.REVIEW_DATA = [
   }
 ];
 
+window.COPILOT_DATA = [
+  {
+    id: 1,
+    content: "Como é que uma IA generativa como o Copilot constrói uma resposta?",
+    details: `**A Resposta Correta:**\nPrevê estatisticamente a próxima palavra (ou token) mais provável numa sequência, com base nos padrões que aprendeu.\n\n**Explicação:**\nO Copilot não "pensa" filosoficamente nem consulta uma base de dados de factos verificados em tempo real (na sua função base). Ele funciona como um motor de previsão sofisticado.`
+  },
+  {
+    id: 2,
+    content: "O que define essencialmente uma \"Equipa ON\"?",
+    details: `**A Resposta Correta:**\nUma equipa onde os documentos vivem na nuvem, existe uma única versão para cada ficheiro e a edição é feita em tempo real e em simultâneo.\n\n**Explicação:**\nO conceito de trabalho moderno no Microsoft 365 elimina a necessidade de enviar anexos por email ("V1", "V2_final"), promovendo a colaboração síncrona no Teams e SharePoint.`
+  },
+  {
+    id: 3,
+    content: "Que cuidados sobre a privacidade de dados são necessários ao usar IA?",
+    details: `**A Resposta Correta:**\nNunca partilhar dados pessoais sensíveis, financeiros, senhas nos prompts ou ficheiros carregados.\n\n**Explicação:**\nA regra de ouro da CMLisboa e do RGPD é a minimização de dados. Se precisar de tratar dados reais, use a técnica da **Anonimização** (substituindo nomes por "Munícipe A").`
+  },
+  {
+    id: 4,
+    content: "O que são \"Tokens\"?",
+    details: `**A Resposta Correta:**\nSão as unidades básicas de texto (palavras ou fragmentos de palavras) que a IA processa e \"lê\".\n\n**Explicação:**\nA IA não vê palavras inteiras como nós. Ela divide o texto em pedaços (tokens). Em média, 1000 tokens equivalem a cerca de 750 palavras.`
+  },
+  {
+    id: 5,
+    content: "Qual é a vantagem de dizer à IA: \"Age como um nutricionista...\"?",
+    details: `**A Resposta Correta:**\nAjuda a IA a filtrar o seu vasto conhecimento, adotando o vocabulário, tom e perspetiva adequados a essa especialidade.\n\n**Explicação:**\nEsta é a técnica da **Identidade/Persona**. Ao atribuir um papel, restringe o foco da IA, evitando respostas genéricas e garantindo um tom mais profissional.`
+  },
+  {
+    id: 6,
+    content: "Qual é o objetivo do modelo RTF ou IDEA num prompt?",
+    details: `**A Resposta Correta:**\nEstruturar o prompt para obter melhores resultados (Por exemplo, \"Age como especialista\" ou \"A tua tarefa é\").\n\n**Explicação:**\nEstruturas como IDEA (Identidade, Direção, Exemplos, Ajustes) garantem que fornece todo o contexto necessário à IA, transformando um pedido vago numa instrução precisa.`
+  },
+  {
+    id: 7,
+    content: "Ao usar a IA para escrever e-mails, qual o papel do utilizador?",
+    details: `**A Resposta Correta:**\nDeve usar a IA para gerar rascunhos e ajustar o tom. E deve rever e editar o conteúdo final antes de enviar.\n\n**Explicação:**\nPrincípio *Human-in-the-Loop*. A IA é o estagiário que faz o rascunho; você é o editor chefe que valida a precisão e assume a responsabilidade legal pelo envio.`
+  },
+  {
+    id: 8,
+    content: "O que faz um Agente de IA (ex: \"Mestre de Prompts\")?",
+    details: `**A Resposta Correta:**\nCria o prompt perfeito a partir de um input simples do utilizador.\n\n**Explicação:**\nAgentes são versões especializadas da IA treinadas para uma tarefa única. Um agente "Mestre de Prompts" ajuda-o a refinar o seu pedido inicial, garantindo que obtém a melhor resposta possível.`
+  },
+  {
+    id: 9,
+    content: "No que consiste um assistente personalizado (Agente Copilot)?",
+    details: `**A Resposta Correta:**\nÉ uma versão da IA com instruções específicas para realizar tarefas concretas. O seu papel e outras características são definidas pelo/a utilizador/a.\n\n**Explicação:**\nPermite criar "mini-IAs" especialistas em regulamentos municipais ou processos internos, baseando-se em links e instruções que você define.`
+  },
+  {
+    id: 10,
+    content: "Como pode usar o Copilot para melhorar uma reunião no Teams?",
+    details: `**A Resposta Correta:**\nO Copilot pode analisar a transcrição da reunião e gerar uma ata com as principais decisões e tarefas.\n\n**Explicação:**\nEsta funcionalidade elimina a perda de informação e poupa tempo manual de redação, transformando discussões longas em listas de ação claras e atribuíveis.`
+  }
+];
+
 window.TOOLS_DATA = [
   {
     id: 'nano-banana',
